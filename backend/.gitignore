@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer / logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+
+# dotenv
+.env
+.env.*
+.puku
+
+# Database
+*.sqlite3
+*.db
+
+# Editor directories
+.vscode/
+.idea/
+
+# Compiled extensions
+*.so
+
+# Node (in case frontend deps are present)
+node_modules/
+
+# OS files
+.DS_Store
+
