@@ -27,10 +27,15 @@ from shared.models import FitScore
 _client: OpenAI | None = None
 
 
-def _get_client() -> OpenAI:
+def _get_client() -> OpenAI | None:
     global _client
+    if not settings.openai_api_key:
+        return None
     if _client is None:
-        _client = OpenAI(api_key=settings.openai_api_key)
+        _client = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        )
     return _client
 
 
@@ -61,8 +66,10 @@ def parse_intent(text: str) -> dict[str, Any]:
 
     try:
         client = _get_client()
+        if not client:
+            raise ValueError("No API key")
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gemini-1.5-flash-latest",
             response_format={"type": "json_object"},
             messages=[
                 {

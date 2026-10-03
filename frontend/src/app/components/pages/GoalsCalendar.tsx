@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "../ui/card";
+import { Card, SignatureCard } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -11,7 +11,7 @@ function ProgressRing({
   progress,
   size = 64,
   strokeWidth = 5,
-  color = "#2563eb",
+  color = "#181d26",
 }: {
   progress: number;
   size?: number;
@@ -24,7 +24,7 @@ function ProgressRing({
   const cx = size / 2;
   return (
     <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-      <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e2e8f0" strokeWidth={strokeWidth} />
+      <circle cx={cx} cy={cx} r={r} fill="none" stroke="#e0e2e6" strokeWidth={strokeWidth} />
       <circle
         cx={cx}
         cy={cx}
@@ -62,17 +62,10 @@ interface TodoItem {
 }
 
 const CATEGORY_COLOR: Record<string, string> = {
-  jobs: "#1d4ed8",
-  study: "#3b82f6",
-  cv: "#60a5fa",
-  interview: "#94a3b8",
-};
-
-const CATEGORY_BG: Record<string, string> = {
-  jobs: "bg-slate-50 border-slate-200",
-  study: "bg-slate-50 border-slate-200",
-  cv: "bg-slate-50 border-slate-200",
-  interview: "bg-slate-50 border-slate-200",
+  jobs: "#181d26",
+  study: "#0a2e0e",
+  cv: "#aa2d00",
+  interview: "#fcab79",
 };
 
 const CATEGORY_ICON: Record<string, React.ReactNode> = {
@@ -264,280 +257,285 @@ export function GoalsCalendar() {
   const streak = 7;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold mb-1">Goals & to-do</h2>
-          <p className="text-sm text-muted-foreground">Set weekly goals and track daily tasks in one place</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 text-sm text-primary border border-blue-200 bg-blue-50 px-3 py-1.5 rounded-md">
-            <Flame className="w-4 h-4" />
-            <span className="font-medium">{streak} day streak</span>
+    <div className="space-y-section">
+      {/* Header */}
+      <section className="section-padding container-editorial">
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="text-display-lg mb-1">Goals & to-do</h2>
+            <p className="text-body-md text-muted-foreground">Set weekly goals and track daily tasks in one place</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 text-sm text-primary border border-primary/30 bg-primary/5 px-3 py-1.5 rounded-md">
+              <Flame className="w-4 h-4" />
+              <span className="font-medium">{streak} day streak</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-primary" /> Weekly goals
-            </h3>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-border gap-1"
-              onClick={() => setShowGoalForm((prev) => !prev)}
-            >
-              <Plus className="w-3.5 h-3.5" /> New goal
-            </Button>
-          </div>
+      <section className="section-padding container-editorial">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-title-lg flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-primary" /> Weekly goals
+              </h3>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border gap-1"
+                onClick={() => setShowGoalForm((prev) => !prev)}
+              >
+                <Plus className="w-3.5 h-3.5" /> New goal
+              </Button>
+            </div>
 
-          {showGoalForm && (
-            <Card className="p-4 border border-border">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-muted-foreground">Goal title</label>
-                  <Input
-                    value={newGoal.label}
-                    onChange={(e) => setNewGoal((prev) => ({ ...prev, label: e.target.value }))}
-                    className="border-border mt-1"
-                    placeholder="Apply to 5 jobs this week"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground">Target count</label>
-                  <Input
-                    type="number"
-                    value={newGoal.target}
-                    onChange={(e) => setNewGoal((prev) => ({ ...prev, target: Number(e.target.value) }))}
-                    className="border-border mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground">Unit</label>
-                  <Input
-                    value={newGoal.unit}
-                    onChange={(e) => setNewGoal((prev) => ({ ...prev, unit: e.target.value }))}
-                    className="border-border mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground">Deadline</label>
-                  <Input
-                    value={newGoal.deadline}
-                    onChange={(e) => setNewGoal((prev) => ({ ...prev, deadline: e.target.value }))}
-                    className="border-border mt-1"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-muted-foreground">Category</label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {(["jobs", "study", "cv", "interview"] as const).map((cat) => (
-                      <button
-                        key={cat}
-                        className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                          newGoal.category === cat
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-muted-foreground hover:border-primary/40"
-                        }`}
-                        onClick={() => setNewGoal((prev) => ({ ...prev, category: cat }))}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" variant="outline" className="border-border" onClick={() => setShowGoalForm(false)}>
-                  Cancel
-                </Button>
-                <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={addGoal}>
-                  Add goal
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {goals.map((goal) => {
-              const pct = Math.round((goal.current / goal.target) * 100);
-              return (
-                <Card key={goal.id} className={`p-4 border ${CATEGORY_BG[goal.category]}`}>
-                  <div className="flex items-center gap-4">
-                    <div className="relative flex items-center justify-center shrink-0">
-                      <ProgressRing progress={pct} size={64} color={goal.color} />
-                      <span className="absolute text-xs font-semibold" style={{ color: goal.color }}>
-                        {pct}%
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-1" style={{ color: goal.color }}>
-                        {goal.icon}
-                        <span className="text-xs font-medium uppercase tracking-wide">{goal.category}</span>
-                      </div>
-                      <p className="text-sm font-medium leading-snug mb-1">{goal.label}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {goal.current} / {goal.target} {goal.unit}
-                        <span className="mx-1.5">·</span>Due {goal.deadline}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">
-              Today's tasks
-              <span className="ml-2 text-xs text-muted-foreground font-normal">
-                {completedCount}/{sortedTodos.length} done
-              </span>
-            </h3>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-border gap-1"
-              onClick={() => setShowTaskForm((prev) => !prev)}
-            >
-              <Plus className="w-3.5 h-3.5" /> Add task
-            </Button>
-          </div>
-
-          {showTaskForm && (
-            <Card className="p-4 border border-border">
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs text-muted-foreground">Task</label>
-                  <Input
-                    value={newTask.text}
-                    onChange={(e) => setNewTask((prev) => ({ ...prev, text: e.target.value }))}
-                    className="border-border mt-1"
-                    placeholder="Apply to Google ML intern"
-                  />
-                </div>
+            {showGoalForm && (
+              <Card className="p-4 border border-border">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs text-muted-foreground">Due date</label>
+                  <div className="sm:col-span-2">
+                    <label className="text-caption text-muted-foreground">Goal title</label>
                     <Input
-                      type="date"
-                      value={newTask.due}
-                      onChange={(e) => setNewTask((prev) => ({ ...prev, due: e.target.value }))}
-                      className="border-border mt-1"
+                      value={newGoal.label}
+                      onChange={(e) => setNewGoal((prev) => ({ ...prev, label: e.target.value }))}
+                      className="border-input-border mt-1"
+                      placeholder="Apply to 5 jobs this week"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-muted-foreground">Goal</label>
-                    <select
-                      value={newTask.goalId}
-                      onChange={(e) => setNewTask((prev) => ({ ...prev, goalId: e.target.value }))}
-                      className="mt-1 w-full rounded-md border border-border bg-input-background px-3 py-2 text-sm"
-                    >
-                      {goals.map((goal) => (
-                        <option key={goal.id} value={goal.id}>{goal.label}</option>
+                    <label className="text-caption text-muted-foreground">Target count</label>
+                    <Input
+                      type="number"
+                      value={newGoal.target}
+                      onChange={(e) => setNewGoal((prev) => ({ ...prev, target: Number(e.target.value) }))}
+                      className="border-input-border mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-caption text-muted-foreground">Unit</label>
+                    <Input
+                      value={newGoal.unit}
+                      onChange={(e) => setNewGoal((prev) => ({ ...prev, unit: e.target.value }))}
+                      className="border-input-border mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-caption text-muted-foreground">Deadline</label>
+                    <Input
+                      value={newGoal.deadline}
+                      onChange={(e) => setNewGoal((prev) => ({ ...prev, deadline: e.target.value }))}
+                      className="border-input-border mt-1"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="text-caption text-muted-foreground">Category</label>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {(["jobs", "study", "cv", "interview"] as const).map((cat) => (
+                        <button
+                          key={cat}
+                          className={`text-caption px-2.5 py-1 rounded-full border transition-colors ${
+                            newGoal.category === cat
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border text-muted-foreground hover:border-primary/40"
+                          }`}
+                          onClick={() => setNewGoal((prev) => ({ ...prev, category: cat }))}
+                        >
+                          {cat}
+                        </button>
                       ))}
-                    </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <Button size="sm" variant="outline" className="border-border" onClick={() => setShowTaskForm(false)}>
-                  Cancel
-                </Button>
-                <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={addTask}>
-                  Add task
-                </Button>
-              </div>
-            </Card>
-          )}
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline" className="border-border" onClick={() => setShowGoalForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button size="sm" className="bg-primary hover:bg-primary-active" onClick={addGoal}>
+                    Add goal
+                  </Button>
+                </div>
+              </Card>
+            )}
 
-          <div className="space-y-2">
-            {sortedTodos.map((todo) => {
-              const dueClass = classifyDue(todo.due);
-              const isEditing = editingTodoId === todo.id;
-              return (
-                <div
-                  key={todo.id}
-                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
-                    todo.done ? "bg-muted/40 border-border" : "bg-card border-border hover:border-primary/30"
-                  }`}
-                >
-                  <button
-                    className="mt-0.5"
-                    onClick={() => toggleTodo(todo.id)}
-                    aria-label="Toggle task"
-                  >
-                    {todo.done ? (
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-muted-foreground shrink-0" />
-                    )}
-                  </button>
-
-                  <div className="flex-1">
-                    {isEditing ? (
-                      <div className="space-y-2">
-                        <Input value={editingText} onChange={(e) => setEditingText(e.target.value)} className="border-border" />
-                        <Input type="date" value={editingDue} onChange={(e) => setEditingDue(e.target.value)} className="border-border" />
-                        <div className="flex gap-2">
-                          <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={saveEdit}>
-                            <Check className="w-3.5 h-3.5 mr-1" /> Save
-                          </Button>
-                          <Button size="sm" variant="outline" className="border-border" onClick={cancelEdit}>
-                            <X className="w-3.5 h-3.5 mr-1" /> Cancel
-                          </Button>
-                        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {goals.map((goal) => {
+                const pct = Math.round((goal.current / goal.target) * 100);
+                return (
+                  <Card key={goal.id} className="p-4 border border-border">
+                    <div className="flex items-center gap-4">
+                      <div className="relative flex items-center justify-center shrink-0">
+                        <ProgressRing progress={pct} size={64} color={goal.color} />
+                        <span className="absolute text-xs font-semibold" style={{ color: goal.color }}>
+                          {pct}%
+                        </span>
                       </div>
-                    ) : (
-                      <>
-                        <div className="flex items-start justify-between gap-2">
-                          <span className={`text-sm ${todo.done ? "line-through text-muted-foreground" : ""}`}>
-                            {todo.text}
-                          </span>
-                          <button className="text-muted-foreground hover:text-foreground" onClick={() => startEdit(todo)}>
-                            <Pencil className="w-3.5 h-3.5" />
-                          </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 mb-1" style={{ color: goal.color }}>
+                          {goal.icon}
+                          <span className="text-caption font-medium uppercase tracking-wide">{goal.category}</span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 mt-2">
-                          <span
-                            className={`text-xs px-2 py-0.5 rounded-full border ${
-                              dueClass === "overdue"
-                                ? "border-slate-200 bg-slate-100 text-slate-600"
-                                : dueClass === "today"
-                                ? "border-blue-200 bg-blue-50 text-blue-700"
-                                : "border-slate-200 bg-slate-50 text-slate-600"
-                            }`}
-                          >
-                            {dueClass === "overdue" ? "Overdue" : dueClass === "today" ? "Due today" : "Upcoming"}
-                          </span>
-                          <span
-                            className="text-xs px-2 py-0.5 rounded-full border"
-                            style={{
-                              color: CATEGORY_COLOR[todo.category],
-                              borderColor: CATEGORY_COLOR[todo.category] + "40",
-                              backgroundColor: CATEGORY_COLOR[todo.category] + "10",
-                            }}
-                          >
-                            {todo.category}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            Due {todo.due}
-                          </span>
-                        </div>
-                      </>
-                    )}
+                        <p className="text-body-md font-medium leading-snug mb-1">{goal.label}</p>
+                        <p className="text-caption text-muted-foreground">
+                          {goal.current} / {goal.target} {goal.unit}
+                          <span className="mx-1.5">·</span>Due {goal.deadline}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-title-lg">
+                Today's tasks
+                <span className="ml-2 text-caption text-muted-foreground font-normal">
+                  {completedCount}/{sortedTodos.length} done
+                </span>
+              </h3>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border gap-1"
+                onClick={() => setShowTaskForm((prev) => !prev)}
+              >
+                <Plus className="w-3.5 h-3.5" /> Add task
+              </Button>
+            </div>
+
+            {showTaskForm && (
+              <Card className="p-4 border border-border">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-caption text-muted-foreground">Task</label>
+                    <Input
+                      value={newTask.text}
+                      onChange={(e) => setNewTask((prev) => ({ ...prev, text: e.target.value }))}
+                      className="border-input-border mt-1"
+                      placeholder="Apply to Google ML intern"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-caption text-muted-foreground">Due date</label>
+                      <Input
+                        type="date"
+                        value={newTask.due}
+                        onChange={(e) => setNewTask((prev) => ({ ...prev, due: e.target.value }))}
+                        className="border-input-border mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-caption text-muted-foreground">Goal</label>
+                      <select
+                        value={newTask.goalId}
+                        onChange={(e) => setNewTask((prev) => ({ ...prev, goalId: e.target.value }))}
+                        className="mt-1 w-full rounded-md border border-border bg-input-background px-3 py-2 text-body-md"
+                      >
+                        {goals.map((goal) => (
+                          <option key={goal.id} value={goal.id}>{goal.label}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              );
-            })}
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" variant="outline" className="border-border" onClick={() => setShowTaskForm(false)}>
+                    Cancel
+                  </Button>
+                  <Button size="sm" className="bg-primary hover:bg-primary-active" onClick={addTask}>
+                    Add task
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            <div className="space-y-2">
+              {sortedTodos.map((todo) => {
+                const dueClass = classifyDue(todo.due);
+                const isEditing = editingTodoId === todo.id;
+                return (
+                  <div
+                    key={todo.id}
+                    className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
+                      todo.done ? "bg-muted/40 border-border" : "bg-card border-border hover:border-primary/30"
+                    }`}
+                  >
+                    <button
+                      className="mt-0.5"
+                      onClick={() => toggleTodo(todo.id)}
+                      aria-label="Toggle task"
+                    >
+                      {todo.done ? (
+                        <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-muted-foreground shrink-0" />
+                      )}
+                    </button>
+
+                    <div className="flex-1">
+                      {isEditing ? (
+                        <div className="space-y-2">
+                          <Input value={editingText} onChange={(e) => setEditingText(e.target.value)} className="border-input-border" />
+                          <Input type="date" value={editingDue} onChange={(e) => setEditingDue(e.target.value)} className="border-input-border" />
+                          <div className="flex gap-2">
+                            <Button size="sm" className="bg-primary hover:bg-primary-active" onClick={saveEdit}>
+                              <Check className="w-3.5 h-3.5 mr-1" /> Save
+                            </Button>
+                            <Button size="sm" variant="outline" className="border-border" onClick={cancelEdit}>
+                              <X className="w-3.5 h-3.5 mr-1" /> Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-start justify-between gap-2">
+                            <span className={`text-body-md ${todo.done ? "line-through text-muted-foreground" : ""}`}>
+                              {todo.text}
+                            </span>
+                            <button className="text-muted-foreground hover:text-foreground" onClick={() => startEdit(todo)}>
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                            <span
+                              className={`text-caption px-2 py-0.5 rounded-full border ${
+                                dueClass === "overdue"
+                                  ? "border-slate-200 bg-slate-100 text-slate-600"
+                                  : dueClass === "today"
+                                  ? "border-primary/30 bg-primary/5 text-primary"
+                                  : "border-border bg-muted text-muted-foreground"
+                              }`}
+                            >
+                              {dueClass === "overdue" ? "Overdue" : dueClass === "today" ? "Due today" : "Upcoming"}
+                            </span>
+                            <span
+                              className="text-caption px-2 py-0.5 rounded-full border"
+                              style={{
+                                color: CATEGORY_COLOR[todo.category],
+                                borderColor: CATEGORY_COLOR[todo.category] + "40",
+                                backgroundColor: CATEGORY_COLOR[todo.category] + "10",
+                              }}
+                            >
+                              {todo.category}
+                            </span>
+                            <span className="text-caption text-muted-foreground">
+                              Due {todo.due}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

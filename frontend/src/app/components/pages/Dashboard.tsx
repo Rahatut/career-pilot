@@ -2,9 +2,10 @@ import * as React from "react";
 import { StatCard } from "../dashboard/StatCard";
 import { JobCard } from "../dashboard/JobCard";
 import { KanbanColumn } from "../dashboard/KanbanColumn";
-import { Card } from "../ui/card";
+import { Card, SignatureCard, CTABand } from "../ui/card";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
+import { Badge } from "../ui/badge";
 import { Briefcase, CalendarDays, Flame, Target, TrendingUp, Sparkles, ArrowRight } from "lucide-react";
 import { getDashboard, getApplications, type DashboardStats, type Application } from "../../../lib/api";
 import { useUser } from "../../contexts";
@@ -51,96 +52,131 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold mb-1">Good morning{user?.name ? `, ${user.name.split(" ")[0]}` : ""}</h2>
-        <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
-      </div>
+    <div className="space-y-section">
+      {/* Hero section - white canvas with 96px rhythm */}
+      <section className="section-padding container-editorial">
+        <h2 className="text-display-lg mb-2">Good morning{user?.name ? `, ${user.name.split(" ")[0]}` : ""}</h2>
+        <p className="text-body-md text-muted-foreground">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</p>
+      </section>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map((stat, idx) => (
-          <StatCard key={idx} {...stat} />
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">Top job matches today</h3>
-            <Button variant="ghost" size="sm" className="text-primary" onClick={() => onNavigate?.("jobs")}>
-              See all <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {topJobs.map((job) => (
-              <div key={job.id} onClick={() => onNavigate?.("job-detail", job.id)} className="cursor-pointer">
-                <JobCard {...job} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Card
-            className="p-4 border border-border bg-card cursor-pointer hover:border-primary/40 transition-colors"
-            onClick={() => onNavigate?.("roadmap")}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">Roadmap progress</h3>
-              <TrendingUp className="w-4 h-4 text-primary" />
-            </div>
-            <div className="space-y-3">
-              {roadmapItems.map((item, idx) => (
-                <div key={idx}>
-                  <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="text-muted-foreground">{item.skill}</span>
-                    <span className="font-medium">{item.progress}%</span>
-                  </div>
-                  <Progress value={item.progress} className="h-1.5" />
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card className="p-4 border border-primary/30 bg-primary/5">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Sparkles className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium mb-1">AI nudge</h4>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {dashData?.skill_gaps.length
-                    ? `Gap areas: ${dashData.skill_gaps.slice(0, 3).join(", ")}.`
-                    : "You're on track! Keep up the momentum."}
-                </p>
-                <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white" onClick={() => onNavigate?.("jobs")}>
-                  View roles
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      <Card className="p-5 border border-border bg-card">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold">Application pipeline</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-primary"
-            onClick={() => onNavigate?.("kanban")}
-          >
-            See all <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {kanbanData.map((column, idx) => (
-            <KanbanColumn key={idx} {...column} />
+      {/* Stats grid */}
+      <section className="section-padding container-editorial">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map((stat, idx) => (
+            <StatCard key={idx} {...stat} />
           ))}
         </div>
-      </Card>
+      </section>
+
+      {/* Main content area - 2/3 + 1/3 split */}
+      <section className="section-padding container-editorial">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            {/* Top job matches */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-title-lg">Top job matches today</h3>
+                <Button variant="ghost" size="sm" className="text-primary gap-1" onClick={() => onNavigate?.("jobs")}>
+                  See all <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                {topJobs.map((job) => (
+                  <div key={job.id} onClick={() => onNavigate?.("job-detail", job.id)} className="cursor-pointer">
+                    <JobCard {...job} />
+                  </div>
+                ))}
+                {topJobs.length === 0 && (
+                  <Card className="p-8 text-center border-border">
+                    <p className="text-body-md text-muted-foreground">No recent job matches yet</p>
+                    <Button className="mt-4" variant="outline" onClick={() => onNavigate?.("jobs")}>Find jobs</Button>
+                  </Card>
+                )}
+              </div>
+            </div>
+
+            {/* Application pipeline - Kanban preview */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-title-lg">Application pipeline</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary gap-1"
+                  onClick={() => onNavigate?.("kanban")}
+                >
+                  See all <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {kanbanData.map((column, idx) => (
+                  <KanbanColumn key={idx} {...column} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar column - Roadmap progress + AI nudge */}
+          <div className="space-y-8">
+            {/* Roadmap progress card */}
+            <Card className="p-6 border border-border bg-card">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-title-lg">Roadmap progress</h3>
+                <TrendingUp className="w-5 h-5 text-primary" />
+              </div>
+              <div className="space-y-4">
+                {roadmapItems.map((item, idx) => (
+                  <div key={idx}>
+                    <div className="flex items-center justify-between text-body-md mb-2">
+                      <span className="text-muted-foreground">{item.skill}</span>
+                      <span className="font-medium">{item.progress}%</span>
+                    </div>
+                    <Progress value={item.progress} className="h-1.5" />
+                  </div>
+                ))}
+                {roadmapItems.length === 0 && (
+                  <p className="text-body-md text-muted-foreground text-center py-4">No roadmap generated yet</p>
+                )}
+              </div>
+            </Card>
+
+            {/* AI nudge - signature coral card per DESIGN.md */}
+            <SignatureCard variant="coral">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm mb-1">AI nudge</h4>
+                  <p className="text-body-md text-muted-foreground mb-4">
+                    {dashData?.skill_gaps.length
+                      ? `Gap areas: ${dashData.skill_gaps.slice(0, 3).join(", ")}.`
+                      : "You're on track! Keep up the momentum."}
+                  </p>
+                  <Button size="sm" variant="secondary-on-dark" onClick={() => onNavigate?.("jobs")}>
+                    View roles
+                  </Button>
+                </div>
+              </div>
+            </SignatureCard>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Band - light gray per DESIGN.md */}
+      <section className="section-padding container-editorial">
+        <CTABand>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <h3 className="text-display-md mb-2">Ready to accelerate your career?</h3>
+              <p className="text-body-md text-muted-foreground">Generate a personalized learning roadmap and start closing skill gaps today.</p>
+            </div>
+            <Button size="lg" onClick={() => onNavigate?.("roadmap")}>
+              Generate Roadmap
+            </Button>
+          </div>
+        </CTABand>
+      </section>
     </div>
   );
 }

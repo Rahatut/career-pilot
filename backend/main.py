@@ -42,9 +42,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="CareerPilot Backend", lifespan=lifespan)
 
 # CORS for frontend
+import os
+
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[FRONTEND_ORIGIN, "http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

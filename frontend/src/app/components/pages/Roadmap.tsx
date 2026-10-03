@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "../ui/card";
+import { Card, SignatureCard } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
@@ -26,10 +26,10 @@ interface WeekPlan {
 }
 
 const TYPE_COLOR: Record<string, string> = {
-  video: "#1d4ed8",
-  article: "#2563eb",
-  course: "#3b82f6",
-  practice: "#60a5fa",
+  video: "var(--color-chart-1)",
+  article: "var(--color-chart-2)",
+  course: "var(--color-chart-4)",
+  practice: "var(--color-chart-5)",
 };
 
 // Maps RoadmapNode from API to local WeekPlan shape
@@ -168,9 +168,9 @@ const MOCK_WEEKS: WeekPlan[] = [
 ];
 
 const STATUS_CONFIG = {
-  done: { label: "Completed", color: "#1d4ed8", bg: "bg-blue-50 border-blue-200" },
-  current: { label: "In Progress", color: "#2563eb", bg: "bg-blue-50 border-blue-200" },
-  locked: { label: "Upcoming", color: "#94a3b8", bg: "bg-slate-50 border-slate-200" },
+  done: { label: "Completed", color: "var(--color-primary)", bg: "border-primary/20 bg-primary/5" },
+  current: { label: "In Progress", color: "var(--color-chart-2)", bg: "border-primary/20 bg-primary/5" },
+  locked: { label: "Upcoming", color: "var(--color-border-strong)", bg: "border-border bg-muted/30" },
 };
 
 export function Roadmap() {
@@ -272,48 +272,60 @@ export function Roadmap() {
           </span>
           <span className="text-muted-foreground">{overallPct}%</span>
         </div>
-        <div className="flex gap-1 h-3">
-          {weeks.map((w) => {
-            const wDone = w.tasks.filter(t => t.done).length;
-            const wTotal = w.tasks.length;
-            const fill = wTotal > 0 ? wDone / wTotal : 0;
-            return (
-              <div key={w.week} className="flex-1 rounded-full bg-border overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${fill * 100}%`,
-                    backgroundColor: w.status === "done" ? "#1d4ed8" : w.status === "current" ? "#3b82f6" : "#cbd5e1",
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+<div className="flex gap-1 h-3">
+            {weeks.map((w) => {
+              const wDone = w.tasks.filter(t => t.done).length;
+              const wTotal = w.tasks.length;
+              const fill = wTotal > 0 ? wDone / wTotal : 0;
+              const bgColor = w.status === "done" 
+                ? "var(--color-primary)" 
+                : w.status === "current" 
+                  ? "var(--color-chart-2)" 
+                  : "var(--color-surface-strong)";
+              return (
+                <div key={w.week} className="flex-1 rounded-full bg-border overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${fill * 100}%`,
+                      backgroundColor: bgColor,
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
         <div className="flex justify-between mt-1.5 text-xs text-muted-foreground">
           <span>Week 1</span>
           <span>Week {weeks.length}</span>
         </div>
       </Card>
 
-      {/* AI nudge */}
-      <Card className="p-4 border border-primary/20 bg-primary/5 flex items-start gap-3">
-        <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-          <Sparkles className="w-4 h-4 text-primary" />
+      {/* AI nudge - signature coral card per DESIGN.md */}
+      <SignatureCard variant="coral">
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+            <Sparkles className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-medium text-sm mb-1">AI insight</h4>
+            <p className="text-body-md text-muted-foreground mb-4">
+              {loading
+                ? "Loading your roadmap..."
+                : skillGaps && skillGaps.length > 0
+                ? `Focus areas: ${skillGaps.slice(0, 3).join(", ")}${skillGaps.length > 3 ? ` and ${skillGaps.length - 3} more` : ""}.`
+                : currentWeek
+                ? `You're on track for Week ${currentWeek.week} (${currentWeek.theme}).`
+                : "Generate a roadmap to get personalized learning recommendations."}
+            </p>
+            {currentWeek && (
+              <Button size="sm" variant="secondary-on-dark" onClick={() => setExpanded(currentWeek.week)}>
+                View Week {currentWeek.week}
+              </Button>
+            )}
+          </div>
         </div>
-        <div>
-          <p className="font-medium text-sm mb-0.5">AI insight</p>
-          <p className="text-sm text-muted-foreground">
-            {loading
-              ? "Loading your roadmap..."
-              : skillGaps && skillGaps.length > 0
-              ? `Focus areas: ${skillGaps.slice(0, 3).join(", ")}${skillGaps.length > 3 ? ` and ${skillGaps.length - 3} more` : ""}.`
-              : currentWeek
-              ? `You're on track for Week ${currentWeek.week} (${currentWeek.theme}).`
-              : "Generate a roadmap to get personalized learning recommendations."}
-          </p>
-        </div>
-      </Card>
+      </SignatureCard>
 
       {/* Weekly plan accordion */}
       <div className="space-y-3">
@@ -340,7 +352,10 @@ export function Roadmap() {
                 {/* Week indicator */}
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-sm font-bold"
-                  style={{ backgroundColor: cfg.color + "18", color: cfg.color }}
+                  style={{
+                    backgroundColor: `color-mix(in srgb, ${cfg.color} 10%, transparent)`,
+                    color: cfg.color,
+                  }}
                 >
                   {week.status === "done" ? (
                     <CheckCircle2 className="w-5 h-5" style={{ color: cfg.color }} />
@@ -357,9 +372,9 @@ export function Roadmap() {
                     <Badge
                       className="text-xs px-2 py-0 h-5 border"
                       style={{
-                        backgroundColor: cfg.color + "12",
+                        backgroundColor: `color-mix(in srgb, ${cfg.color} 7%, transparent)`,
                         color: cfg.color,
-                        borderColor: cfg.color + "30",
+                        borderColor: `color-mix(in srgb, ${cfg.color} 20%, transparent)`,
                       }}
                     >
                       {cfg.label}
@@ -414,53 +429,56 @@ export function Roadmap() {
                       </div>
                     </div>
 
-                    {/* Resources */}
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
-                        Resources
-                      </p>
-                      <div className="space-y-2">
-                        {week.resources.map((res, i) => (
-                          <div
-                            key={i}
-                            className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:border-primary/30 transition-colors cursor-pointer group"
-                            onClick={() => res.url && window.open(res.url, "_blank")}
-                          >
-                            <div
-                              className="w-6 h-6 rounded flex items-center justify-center shrink-0"
-                              style={{ backgroundColor: TYPE_COLOR[res.type] + "18" }}
-                            >
-                              <BookOpen
-                                className="w-3.5 h-3.5"
-                                style={{ color: TYPE_COLOR[res.type] }}
-                              />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm truncate">{res.title}</p>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <Badge
-                                  className="text-xs px-1.5 py-0 h-4 border-0 capitalize"
-                                  style={{
-                                    backgroundColor: TYPE_COLOR[res.type] + "15",
-                                    color: TYPE_COLOR[res.type],
-                                  }}
+{/* Resources */}
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
+                          Resources
+                        </p>
+                        <div className="space-y-2">
+                          {week.resources.map((res, i) => {
+                            const typeColor = TYPE_COLOR[res.type];
+                            return (
+                              <div
+                                key={i}
+                                className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:border-primary/30 transition-colors cursor-pointer group"
+                                onClick={() => res.url && window.open(res.url, "_blank")}
+                              >
+                                <div
+                                  className="w-6 h-6 rounded flex items-center justify-center shrink-0"
+                                  style={{ backgroundColor: `color-mix(in srgb, ${typeColor} 10%, transparent)` }}
                                 >
-                                  {res.type}
-                                </Badge>
-                                {res.duration && (
-                                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                    <Clock className="w-3 h-3" /> {res.duration}
-                                  </span>
+                                  <BookOpen
+                                    className="w-3.5 h-3.5"
+                                    style={{ color: typeColor }}
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm truncate">{res.title}</p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <Badge
+                                      className="text-xs px-1.5 py-0 h-4 border-0 capitalize"
+                                      style={{
+                                        backgroundColor: `color-mix(in srgb, ${typeColor} 8%, transparent)`,
+                                        color: typeColor,
+                                      }}
+                                    >
+                                      {res.type}
+                                    </Badge>
+                                    {res.duration && (
+                                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                        <Clock className="w-3 h-3" /> {res.duration}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                {res.url && (
+                                  <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                                 )}
                               </div>
-                            </div>
-                            {res.url && (
-                              <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                            )}
-                          </div>
-                        ))}
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
                   </div>
 
                   {week.status === "current" && (

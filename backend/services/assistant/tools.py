@@ -15,7 +15,10 @@ _client: OpenAI | None = None
 def _get_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(api_key=settings.openai_api_key)
+        _client = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        )
     return _client
 
 
@@ -27,7 +30,7 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
     try:
         client = _get_client()
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gemini-1.5-flash-latest",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

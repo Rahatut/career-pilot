@@ -4,7 +4,14 @@ from openai import AsyncOpenAI
 
 from shared.config import settings
 
-client = AsyncOpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else None
+
+def _get_client() -> AsyncOpenAI | None:
+    if not settings.openai_api_key:
+        return None
+    return AsyncOpenAI(
+        api_key=settings.openai_api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
 
 
 async def explain_score(score: int, breakdown: dict, job_title: str | None, missing_skills: list[str]) -> str:
@@ -12,6 +19,7 @@ async def explain_score(score: int, breakdown: dict, job_title: str | None, miss
     Generate a human-readable explanation of a fit score using gpt-4o-mini.
     Falls back to a static message when OPENAI_API_KEY is not set.
     """
+    client = _get_client()
     if not client:
         skills_text = ", ".join(missing_skills) if missing_skills else "none"
         return (
@@ -36,7 +44,7 @@ Write a brief, encouraging, and actionable explanation (2-3 sentences) of why th
 """
 
     response = await client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gemini-1.5-flash-latest",
         messages=[
             {
                 "role": "system",

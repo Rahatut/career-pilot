@@ -16,7 +16,18 @@ from .rag import query_cv
 from .tools import cover_letter, skill_gap, readiness_check
 
 router = APIRouter(tags=["assistant"])
-openai_client = AsyncOpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else None
+
+
+def _get_openai_client() -> AsyncOpenAI | None:
+    if not settings.openai_api_key:
+        return None
+    return AsyncOpenAI(
+        api_key=settings.openai_api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
+
+
+openai_client = _get_openai_client()
 
 
 SYSTEM_PROMPT = """You are CareerPilot, an AI career assistant helping users with:
@@ -120,7 +131,7 @@ async def chat(
                 reply = "AI assistant is not configured. Please set OPENAI_API_KEY in .env to enable full functionality."
             else:
                 response = await openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model="gemini-1.5-flash-latest",
                     messages=messages,
                     max_tokens=800,
                     temperature=0.7,
@@ -165,7 +176,7 @@ async def chat_stream(
                 full_reply = msg
             else:
                 stream = await openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model="gemini-1.5-flash-latest",
                     messages=messages,
                     stream=True,
                     max_tokens=800,

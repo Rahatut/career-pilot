@@ -21,15 +21,24 @@ SYSTEM_PROMPT = (
 )
 
 
+def _get_client() -> AsyncOpenAI | None:
+    if not settings.openai_api_key:
+        return None
+    return AsyncOpenAI(
+        api_key=settings.openai_api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
+
+
 async def classify_intent(text: str) -> str:
     """Classify user message into one of 5 intents using gpt-4o-mini."""
-    if not settings.openai_api_key:
+    client = _get_client()
+    if not client:
         return _keyword_intent(text)
 
     try:
-        client = AsyncOpenAI(api_key=settings.openai_api_key)
         response = await client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gemini-1.5-flash-latest",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text[:500]},

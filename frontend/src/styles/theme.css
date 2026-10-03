@@ -2,84 +2,133 @@
 
 :root {
   --font-size: 16px;
+  /* Colors - Airtable-inspired editorial system */
   --background: #ffffff;
-  --foreground: #0a0a0a;
+  --foreground: #181d26;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #181d26;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #1d4ed8;
+  --popover-foreground: #181d26;
+  --primary: #181d26;
   --primary-foreground: #ffffff;
-  --secondary: #f8fafc;
-  --secondary-foreground: #0a0a0a;
+  --primary-active: #0d1218;
+  --secondary: #ffffff;
+  --secondary-foreground: #181d26;
   --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #dbeafe;
-  --accent-foreground: #1e3a8a;
-  --destructive: #ef4444;
+  --muted-foreground: #41454d;
+  --accent: #f5e9d4;
+  --accent-foreground: #181d26;
+  --destructive: #aa2d00;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
+  --border: #dddddd;
+  --border-strong: #9297a0;
   --input: transparent;
-  --input-background: #f8fafc;
+  --input-background: #ffffff;
+  --input-border: #dddddd;
+  --input-focus: #458fff;
   --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #2563eb;
-  --chart-1: #1d4ed8;
-  --chart-2: #2563eb;
-  --chart-3: #3b82f6;
-  --chart-4: #60a5fa;
-  --chart-5: #94a3b8;
-  --radius: 0.5rem;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #2563eb;
+  --ring: #458fff;
+  --chart-1: #aa2d00;
+  --chart-2: #0a2e0e;
+  --chart-3: #181d26;
+  --chart-4: #fcab79;
+  --chart-5: #a8d8c4;
+  --chart-6: #f4d35e;
+  --chart-7: #d9a441;
+  --radius: 0.625rem;
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #181d26;
+  --sidebar-primary: #181d26;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #2563eb;
-  --success: #1d4ed8;
-  --warning: #1d4ed8;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: #181d26;
+  --sidebar-border: #dddddd;
+  --sidebar-ring: #458fff;
+  --success: #006400;
+  --success-border: #39bf45;
+  --info: #254fad;
+  --info-border: #458fff;
+  --link: #1b61c9;
+  --link-active: #1a3866;
+  /* Additional semantic tokens per DESIGN.md */
+  --surface-soft: #f8fafc;
+  --surface-strong: #e0e2e6;
+  --surface-dark: #181d26;
+  --surface-dark-elevated: #1d1f25;
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --pricing-ink: #1d1f25;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #141414;
-  --card-foreground: #fafafa;
-  --popover: #141414;
-  --popover-foreground: #fafafa;
-  --primary: #3b82f6;
+  --background: #181d26;
+  --foreground: #ffffff;
+  --card: #1d1f25;
+  --card-foreground: #ffffff;
+  --popover: #1d1f25;
+  --popover-foreground: #ffffff;
+  /* Primary stays as brand ink in both modes */
+  --primary: #181d26;
   --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #fafafa;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e3a8a;
-  --accent-foreground: #93c5fd;
-  --destructive: #dc2626;
+  --primary-active: #0d1218;
+  --secondary: #1d1f25;
+  --secondary-foreground: #ffffff;
+  --muted: #1d1f25;
+  --muted-foreground: #9297a0;
+  /* Accent stays cream in both modes */
+  --accent: #f5e9d4;
+  --accent-foreground: #181d26;
+  /* Destructive stays coral in both modes */
+  --destructive: #aa2d00;
   --destructive-foreground: #ffffff;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #3b82f6;
+  --border: #1d1f25;
+  --border-strong: #41454d;
+  --input: #1d1f25;
+  --input-background: #1d1f25;
+  --input-border: #1d1f25;
+  --input-focus: #458fff;
+  --switch-background: #41454d;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #3b82f6;
-  --chart-2: #60a5fa;
-  --chart-3: #93c5fd;
-  --chart-4: #94a3b8;
-  --chart-5: #cbd5f5;
-  --sidebar: #0f0f0f;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #3b82f6;
+  --ring: #458fff;
+  /* Chart colors stay as brand signatures in both modes */
+  --chart-1: #aa2d00;
+  --chart-2: #0a2e0e;
+  --chart-3: #181d26;
+  --chart-4: #fcab79;
+  --chart-5: #a8d8c4;
+  --chart-6: #f4d35e;
+  --chart-7: #d9a441;
+  --sidebar: #181d26;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #181d26;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #3b82f6;
-  --success: #3b82f6;
-  --warning: #3b82f6;
+  --sidebar-accent: #1d1f25;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1d1f25;
+  --sidebar-ring: #458fff;
+  --success: #39bf45;
+  --success-border: #006400;
+  --info: #458fff;
+  --info-border: #254fad;
+  --link: #458fff;
+  --link-active: #6bb3ff;
+  /* Additional semantic tokens */
+  --surface-soft: #1d1f25;
+  --surface-strong: #41454d;
+  --surface-dark: #181d26;
+  --surface-dark-elevated: #1d1f25;
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --pricing-ink: #1d1f25;
 }
 
 @theme inline {
@@ -91,6 +140,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-active: var(--primary-active);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -100,8 +150,11 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-input-background: var(--input-background);
+  --color-input-border: var(--input-border);
+  --color-input-focus: var(--input-focus);
   --color-switch-background: var(--switch-background);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -109,12 +162,20 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
   --color-success: var(--success);
-  --color-warning: var(--warning);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-success-border: var(--success-border);
+  --color-info: var(--info);
+  --color-info-border: var(--info-border);
+  --color-link: var(--link);
+  --color-link-active: var(--link-active);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+  --radius-full: var(--radius-full);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -123,6 +184,35 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-elevated: var(--surface-dark-elevated);
+  --color-on-primary: var(--on-primary);
+  --color-on-dark: var(--on-dark);
+  --color-pricing-ink: var(--pricing-ink);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @layer base {
@@ -133,47 +223,152 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
   }
-
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
 
   html {
     font-size: var(--font-size);
   }
 
+  /* Typography scale - Inter Display as Haas substitute */
   h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-4xl);
+    font-weight: 400;
+    line-height: 1.2;
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-3xl);
+    font-weight: 400;
+    line-height: 1.2;
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: var(--text-xl);
+    font-weight: 400;
+    line-height: 1.35;
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0.12px;
   }
 
   h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
+    font-size: var(--text-lg);
+    font-weight: 400;
     line-height: 1.5;
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
+  }
+
+  .text-display-xl {
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1.1;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-display-lg {
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.2;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-display-md {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.2;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-title-lg {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.35;
+    font-family: var(--font-display);
+    letter-spacing: 0.12px;
+  }
+
+  .text-title-md {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-title-sm {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.4;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-label-md {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .text-button {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .text-body-md {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  .text-caption {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.16px;
+  }
+
+  .text-legal {
+    font-size: 13.12px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .text-pricing-display {
+    font-size: 44.8px;
+    font-weight: 475;
+    line-height: 1.1;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-pricing-section {
+    font-size: 28px;
+    font-weight: 475;
+    line-height: 1.2;
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+
+  .text-pricing-card-title {
+    font-size: 20px;
+    font-weight: 475;
+    line-height: 1.3;
+    font-family: var(--font-display);
+    letter-spacing: 0;
   }
 
   label {
@@ -192,5 +387,27 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+}
+
+@layer utilities {
+  .section-padding {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+
+  .container-editorial {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  @media (max-width: 1024px) {
+    .container-editorial {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
   }
 }

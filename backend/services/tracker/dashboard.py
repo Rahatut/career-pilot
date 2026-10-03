@@ -14,7 +14,14 @@ from shared.models import (
     Job,
 )
 
-client = AsyncOpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else None
+
+def _get_client() -> AsyncOpenAI | None:
+    if not settings.openai_api_key:
+        return None
+    return AsyncOpenAI(
+        api_key=settings.openai_api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
 
 
 def calculate_streak(applications: list[JobApplication]) -> int:
@@ -123,10 +130,11 @@ Write a short, motivating nudge (1 sentence, max 20 words) to inspire them to ke
 """
 
     try:
+        client = _get_client()
         if not client:
             return "Keep pushing forward!"
         response = await client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gemini-1.5-flash-latest",
             messages=[
                 {"role": "system", "content": "You are a motivational career assistant."},
                 {"role": "user", "content": prompt},

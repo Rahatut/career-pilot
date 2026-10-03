@@ -2,6 +2,7 @@ import * as React from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 import { Briefcase, Sparkles, Target, TrendingUp, ArrowRight, AlertCircle } from "lucide-react";
 import { useUser } from "../../contexts/UserContext";
 
@@ -63,95 +64,94 @@ export function AuthPage({ onAuth }: AuthPageProps) {
 
   return (
     <div className="min-h-screen flex">
-      {/* ── Left branding panel ─────────────────────────────────────────── */}
-      <div className="hidden lg:flex lg:w-[58%] flex-col bg-[#0a0e1a] text-white relative overflow-hidden">
-        {/* Subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-        {/* Glow */}
-        <div className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-
-        <div className="relative z-10 flex flex-col h-full p-12">
-          {/* Logo */}
-          <div className="flex items-center gap-2.5 mb-16">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <Briefcase className="w-4 h-4 text-white" />
+      {/* Left branding panel - signature dark card per DESIGN.md */}
+      <div className="hidden lg:flex lg:w-[58%] flex-col relative overflow-hidden">
+        <div className="absolute inset-0 bg-primary">
+          {/* Subtle grid pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="relative z-10 flex flex-col h-full p-12">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5 mb-16">
+              <div className="w-8 h-8 rounded-lg bg-primary-active flex items-center justify-center">
+                <Briefcase className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-lg font-medium tracking-tight">CareerPilot</span>
             </div>
-            <span className="text-lg font-semibold tracking-tight">CareerPilot</span>
-          </div>
 
-          {/* Hero text */}
-          <div className="flex-1 flex flex-col justify-center max-w-md">
-            <h1 className="text-4xl font-semibold leading-tight mb-4">
-              Your AI career<br />co-pilot.
-            </h1>
-            <p className="text-white/50 text-lg mb-12 leading-relaxed">
-              Find the right jobs, track every application, and build the skills that get you hired — all in one place.
-            </p>
+            {/* Hero text */}
+            <div className="flex-1 flex flex-col justify-center max-w-md">
+              <h1 className="text-display-lg mb-4 text-white">
+                Your AI career<br />co-pilot.
+              </h1>
+<p className="text-body-md text-primary-foreground/80 mb-12 leading-relaxed">
+                 Find the right jobs, track every application, and build the skills that get you hired — all in one place.
+               </p>
 
-            <div className="space-y-5">
-              {FEATURES.map((f) => (
-                <div key={f.title} className="flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-blue-400">
-                    {f.icon}
+              <div className="space-y-5">
+                {FEATURES.map((f) => (
+                  <div key={f.title} className="flex items-start gap-4">
+                    <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-primary-foreground">
+                      {f.icon}
+                    </div>
+                    <div>
+                      <p className="text-label-md text-primary-foreground mb-0.5">{f.title}</p>
+                      <p className="text-body-md text-primary-foreground/70 leading-relaxed">{f.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-sm text-white/90 mb-0.5">{f.title}</p>
-                    <p className="text-sm text-white/40 leading-relaxed">{f.desc}</p>
-                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom stats */}
+            <div className="flex gap-8 pt-8 border-t border-white/20">
+              {[["2.4k+", "Active users"], ["89%", "Interview rate"], ["4.8★", "Rating"]].map(([val, lbl]) => (
+                <div key={lbl}>
+                  <p className="text-title-md font-medium text-primary-foreground">{val}</p>
+                  <p className="text-caption text-primary-foreground/60 mt-0.5">{lbl}</p>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Bottom stats */}
-          <div className="flex gap-8 pt-8 border-t border-white/10">
-            {[["2.4k+", "Active users"], ["89%", "Interview rate"], ["4.8★", "Rating"]].map(([val, lbl]) => (
-              <div key={lbl}>
-                <p className="text-xl font-semibold text-white/90">{val}</p>
-                <p className="text-xs text-white/40 mt-0.5">{lbl}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
-      {/* ── Right form panel ────────────────────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-white">
+      {/* Right form panel - white canvas */}
+      <div className="flex-1 flex items-center justify-center p-6 bg-background">
         <div className="w-full max-w-[400px]">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <Briefcase className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-semibold">CareerPilot</span>
+            <span className="text-label-md">CareerPilot</span>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-1">
+          <h2 className="text-display-md mb-1">
             {mode === "sign-up" ? "Create your account" : "Welcome back"}
           </h2>
-          <p className="text-sm text-muted-foreground mb-8">
+          <p className="text-body-md text-muted-foreground mb-8">
             {mode === "sign-up"
               ? "Start your AI-powered job search today."
               : "Sign in to continue where you left off."}
           </p>
 
           {(localError || error) && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{localError || error}</p>
+            <div className="mb-6 p-4 border border-destructive/30 bg-destructive/5 rounded-lg flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+              <p className="text-body-md text-destructive">{localError || error}</p>
             </div>
           )}
 
-          {/* Google OAuth */}
+          {/* Google OAuth - secondary button */}
           <Button
             variant="outline"
-            className="w-full border-border gap-3 mb-4 h-11"
+            className="w-full border-border gap-3 h-11"
             onClick={onAuth}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -163,39 +163,39 @@ export function AuthPage({ onAuth }: AuthPageProps) {
             Continue with Google
           </Button>
 
-          <div className="flex items-center gap-3 my-5">
+          <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">or</span>
+            <span className="text-caption text-muted-foreground">or</span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "sign-up" && (
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Full name</label>
+                <label className="text-label-md mb-1.5 block">Full name</label>
                 <Input
                   placeholder="Araf Rahman"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="border-border h-11"
+                  className="border-input-border"
                 />
               </div>
             )}
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Email</label>
+              <label className="text-label-md mb-1.5 block">Email</label>
               <Input
                 type="email"
                 placeholder="araf@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-border h-11"
+                className="border-input-border"
               />
             </div>
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-medium">Password</label>
+                <label className="text-label-md">Password</label>
                 {mode === "sign-in" && (
-                  <button type="button" className="text-xs text-primary hover:underline">
+                  <button type="button" className="text-caption text-link active:text-link-active">
                     Forgot password?
                   </button>
                 )}
@@ -205,12 +205,12 @@ export function AuthPage({ onAuth }: AuthPageProps) {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-border h-11"
+                className="border-input-border"
               />
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary/90 h-11 gap-2 mt-1"
+              className="w-full gap-2 h-11"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -224,19 +224,19 @@ export function AuthPage({ onAuth }: AuthPageProps) {
             </Button>
           </form>
 
-          <p className="text-sm text-center text-muted-foreground mt-6">
+          <p className="text-body-md text-center text-muted-foreground mt-6">
             {mode === "sign-up" ? (
               <>Already have an account?{" "}
-                <button onClick={() => setMode("sign-in")} className="text-primary hover:underline font-medium">Sign in</button>
+                <button onClick={() => setMode("sign-in")} className="text-link active:text-link-active font-medium">Sign in</button>
               </>
             ) : (
               <>Don't have an account?{" "}
-                <button onClick={() => setMode("sign-up")} className="text-primary hover:underline font-medium">Sign up</button>
+                <button onClick={() => setMode("sign-up")} className="text-link active:text-link-active font-medium">Sign up</button>
               </>
             )}
           </p>
 
-          <p className="text-xs text-center text-muted-foreground mt-6">
+          <p className="text-caption text-center text-muted-foreground mt-6">
             By continuing, you agree to our{" "}
             <span className="underline cursor-pointer">Terms of Service</span>{" "}
             and{" "}
