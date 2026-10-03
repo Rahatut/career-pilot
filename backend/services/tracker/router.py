@@ -20,14 +20,14 @@ router = APIRouter(tags=["tracker"])
 @router.post("/goals", response_model=dict)
 def create_goal(
     title: Annotated[str, Body(description="Goal title")],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     target_date: Annotated[str | None, Body(description="ISO date string")] = None,
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
     """Create a new goal."""
     goal = Goal(
         id=uuid.uuid4(),
-        user_id=user_id,
+        user_id=current_user_id,
         title=title,
         target_date=datetime.fromisoformat(target_date) if target_date else None,
         is_active=True,
@@ -39,10 +39,10 @@ def create_goal(
 
 @router.get("/goals", response_model=dict)
 def list_goals(
-    user_id: Annotated[str, Header()] = "",
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
-    goals = db.query(Goal).filter(Goal.user_id == user_id).all()
+    goals = db.query(Goal).filter(Goal.user_id == current_user_id).all()
     return {
         "goals": [
             {
@@ -59,12 +59,12 @@ def list_goals(
 @router.patch("/goals/{goal_id}", response_model=dict)
 def update_goal(
     goal_id: str,
+    current_user_id: Annotated[str, Depends(get_current_user)],
     title: Annotated[str | None, Body()] = None,
     is_active: Annotated[bool | None, Body()] = None,
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
-    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.user_id == user_id).first()
+    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.user_id == current_user_id).first()
     if not goal:
         raise HTTPException(404, "Goal not found")
     if title is not None:
@@ -81,15 +81,15 @@ def update_goal(
 @router.post("/tasks", response_model=dict)
 def create_task(
     title: Annotated[str, Body(description="Task title")],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     goal_id: Annotated[str | None, Body(description="UUID of parent goal")] = None,
     deadline: Annotated[str | None, Body(description="ISO datetime string")] = None,
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
     """Create a new task, optionally linked to a goal."""
     task = Task(
         id=uuid.uuid4(),
-        user_id=user_id,
+        user_id=current_user_id,
         title=title,
         goal_id=uuid.UUID(goal_id) if goal_id else None,
         deadline=datetime.fromisoformat(deadline) if deadline else None,
@@ -102,10 +102,10 @@ def create_task(
 
 @router.get("/tasks", response_model=dict)
 def list_tasks(
-    user_id: Annotated[str, Header()] = "",
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
-    tasks = db.query(Task).filter(Task.user_id == user_id).all()
+    tasks = db.query(Task).filter(Task.user_id == current_user_id).all()
     return {
         "tasks": [
             {
@@ -123,11 +123,11 @@ def list_tasks(
 @router.patch("/tasks/{task_id}", response_model=dict)
 def update_task(
     task_id: str,
+    current_user_id: Annotated[str, Depends(get_current_user)],
     is_completed: Annotated[bool | None, Body()] = None,
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
-    task = db.query(Task).filter(Task.id == task_id, Task.user_id == user_id).first()
+    task = db.query(Task).filter(Task.id == task_id, Task.user_id == current_user_id).first()
     if not task:
         raise HTTPException(404, "Task not found")
     if is_completed is not None:
@@ -142,13 +142,13 @@ def update_task(
 @router.post("/applications", response_model=dict)
 def create_application(
     job_id: Annotated[str, Body(description="UUID of the job")],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     status: Annotated[str, Body(description="Initial status")] = "applied",
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
     """Record a job application submission."""
     existing = db.query(JobApplication).filter(
-        JobApplication.user_id == user_id,
+        JobApplication.user_id == current_user_id,
         JobApplication.job_id == job_id,
     ).first()
     if existing:
@@ -156,7 +156,7 @@ def create_application(
 
     app = JobApplication(
         id=uuid.uuid4(),
-        user_id=user_id,
+        user_id=current_user_id,
         job_id=job_id,
         status=status,
         status_history=[{"status": status, "timestamp": datetime.utcnow().isoformat()}],
@@ -199,14 +199,14 @@ def list_applications(
 @router.patch("/applications/{application_id}", response_model=dict)
 def update_application(
     application_id: str,
+    current_user_id: Annotated[str, Depends(get_current_user)],
     status: Annotated[str, Body(description="New status")],
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
     """Update application status (appends to status_history)."""
     app = db.query(JobApplication).filter(
         JobApplication.id == application_id,
-        JobApplication.user_id == user_id,
+        JobApplication.user_id == current_user_id,
     ).first()
     if not app:
         raise HTTPException(404, "Application not found")

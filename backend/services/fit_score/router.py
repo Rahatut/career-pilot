@@ -139,8 +139,8 @@ async def explain_fit_score(
         )
         fit_row = FitScore(
             id=uuid.uuid4(),
-            user_id=user_id,
-            job_id=job_id,
+            user_id=user_uuid,
+            job_id=job_uuid,
             score=score,
             breakdown=breakdown,
         )

@@ -72,7 +72,7 @@ async def _build_messages(user_id: str, session: ChatSession, message: str) -> l
     messages: list[dict] = [{"role": "system", "content": SYSTEM_PROMPT}]
 
     # Add CV context
-    cv_context = await asyncio.to_thread(query_cv, user_id, message, n=5)
+    cv_context = await asyncio.to_thread(query_cv, current_user_id, message, n=5)
     if cv_context:
         messages.append({"role": "system", "content": f"User's CV context:\n{cv_context}"})
 
@@ -80,7 +80,7 @@ async def _build_messages(user_id: str, session: ChatSession, message: str) -> l
     history = (
         db.query(ChatMessage)
         .filter(
-            ChatMessage.user_id == user_id,
+            ChatMessage.user_id == current_user_id,
             ChatMessage.session_id == session.id,
         )
         .order_by(ChatMessage.created_at.asc())
@@ -97,7 +97,7 @@ async def _build_messages(user_id: str, session: ChatSession, message: str) -> l
 @router.post("/chat", response_model=dict)
 async def chat(
     payload: Annotated[dict, Body()],
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """Non-streaming chat endpoint."""
@@ -105,27 +105,27 @@ async def chat(
     session_id: str | None = payload.get("session_id")
     jd_text = payload.get("jd_text", "")
 
-    session = _get_or_create_session(db, user_id, session_id)
+    session = _get_or_create_session(db, current_user_id, session_id)
     intent = await classify_intent(message)
 
     # Save user message
-    _save_message(db, session.id, user_id, "user", message)
+    _save_message(db, session.id, current_user_id, "user", message)
 
     # Route based on intent first
     reply = ""
     if intent == "cover_letter" and jd_text:
-        result = await asyncio.to_thread(cover_letter, user_id, jd_text)
+        result = await asyncio.to_thread(cover_letter, current_user_id, jd_text)
         reply = result.get("cover_letter", result) if isinstance(result, dict) else str(result)
     elif intent == "skill_gap":
         target = payload.get("target_role", message)
-        result = await asyncio.to_thread(skill_gap, user_id, target)
+        result = await asyncio.to_thread(skill_gap, current_user_id, target)
         reply = result.get("recommendations", str(result)) if isinstance(result, dict) else str(result)
     elif intent == "job_readiness" and jd_text:
-        result = await asyncio.to_thread(readiness_check, user_id, jd_text)
+        result = await asyncio.to_thread(readiness_check, current_user_id, jd_text)
         reply = result.get("notes", str(result)) if isinstance(result, dict) else str(result)
     else:
         # Use LLM
-        messages = await _build_messages(user_id, session, message)
+        messages = await _build_messages(current_user_id, session, message)
         try:
             if not openai_client:
                 reply = "AI assistant is not configured. Please set OPENAI_API_KEY in .env to enable full functionality."
@@ -141,7 +141,7 @@ async def chat(
             reply = f"Error: {e}"
 
     # Save assistant reply
-    _save_message(db, session.id, user_id, "assistant", reply)
+    _save_message(db, session.id, current_user_id, "assistant", reply)
 
     return {
         "session_id": str(session.id),
@@ -153,19 +153,19 @@ async def chat(
 @router.post("/chat/stream")
 async def chat_stream(
     payload: Annotated[dict, Body()],
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """Streaming chat endpoint."""
     message = payload.get("message", "")
     session_id: str | None = payload.get("session_id")
 
-    session = _get_or_create_session(db, user_id, session_id)
+    session = _get_or_create_session(db, current_user_id, session_id)
     intent = await classify_intent(message)
 
-    _save_message(db, session.id, user_id, "user", message)
+    _save_message(db, session.id, current_user_id, "user", message)
 
-    messages = await _build_messages(user_id, session, message)
+    messages = await _build_messages(current_user_id, session, message)
 
     async def stream_gen() -> AsyncGenerator[str, None]:
         full_reply = ""
@@ -191,7 +191,7 @@ async def chat_stream(
             yield f"Error: {e}"
 
         if full_reply:
-            _save_message(db, session.id, user_id, "assistant", full_reply)
+            _save_message(db, session.id, current_user_id, "assistant", full_reply)
 
     return StreamingResponse(
         stream_gen(),
@@ -202,13 +202,13 @@ async def chat_stream(
 
 @router.get("/sessions", response_model=dict)
 def list_sessions(
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """List all chat sessions for the user."""
     sessions = (
         db.query(ChatSession)
-        .filter(ChatSession.user_id == user_id)
+        .filter(ChatSession.user_id == current_user_id)
         .order_by(ChatSession.updated_at.desc())
         .all()
     )
@@ -227,13 +227,13 @@ def list_sessions(
 @router.get("/sessions/{session_id}/messages", response_model=dict)
 def get_session_messages(
     session_id: str,
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """Get all messages for a session."""
     session = db.query(ChatSession).filter(
         ChatSession.id == session_id,
-        ChatSession.user_id == user_id,
+        ChatSession.user_id == current_user_id,
     ).first()
     if not session:
         raise HTTPException(404, "Session not found")
@@ -257,10 +257,10 @@ def get_session_messages(
 @router.post("/cover-letter", response_model=dict)
 async def cover_letter_endpoint(
     payload: Annotated[dict, Body()],
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     jd_text = payload.get("jd_text", "")
-    result = await asyncio.to_thread(cover_letter, user_id, jd_text)
+    result = await asyncio.to_thread(cover_letter, current_user_id, jd_text)
     content = result.get("cover_letter", str(result)) if isinstance(result, dict) else str(result)
     return {"cover_letter": content}

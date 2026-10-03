@@ -57,7 +57,19 @@ async def upload_cv(
 ):
     """Upload and parse a new CV. Extracts text and updates profile dynamically."""
     user_uuid = uuid.UUID(current_user_id)
+    
+    # Validate file type
+    allowed_types = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ]
+    if file.content_type not in allowed_types:
+        raise HTTPException(400, "Only PDF and DOCX files allowed")
+    
+    # Read file with size limit (10MB)
     data = await file.read()
+    if len(data) > 10 * 1024 * 1024:
+        raise HTTPException(400, "File too large (max 10MB)")
     if len(data) < 100:
         raise HTTPException(400, "File is too small or empty")
 
@@ -114,29 +126,8 @@ async def upload_cv(
 
     db.commit()
 
-    # Background embedding (non-blocking)
-    asyncio.create_task(embed_cv(cv_id, user_uuid, sections_data, db))
-
-    return CVUploadResponse(
-        cv_id=str(cv_id),
-        sections_count=len(section_rows),
-        skills_count=len(profile_data["skills"]),
-    )
-    if existing_profile:
-        existing_profile.skills = profile_data["skills"]
-        existing_profile.raw_text = profile_data["raw_text"]
-    else:
-        db.add(UserProfile(
-            id=uuid.uuid4(),
-            user_id=user_id,
-            skills=profile_data["skills"],
-            raw_text=profile_data["raw_text"],
-        ))
-
-    db.commit()
-
-    # Background embedding (non-blocking)
-    asyncio.create_task(embed_cv(cv_id, user_id, sections_data, db))
+    # Background embedding with NEW session (non-blocking)
+    asyncio.create_task(embed_cv_async(cv_id, user_uuid, sections_data))
 
     return CVUploadResponse(
         cv_id=str(cv_id),

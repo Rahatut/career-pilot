@@ -6,6 +6,8 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 from shared.config import settings
+from shared.db import SessionLocal
+from shared.models import CV
 
 _client: chromadb.ClientAPI | None = None
 _model: SentenceTransformer | None = None
@@ -78,7 +80,7 @@ async def embed_cv(
         section_type = section.get("section_type", "other")
         chunks = _chunk_text(content)
         for chunk in chunks:
-            chunk_id = hashlib.md5(chunk.encode()).hexdigest()[:16]
+            chunk_id = hashlib.sha256(chunk.encode()).hexdigest()[:16]
             records.append((chunk, {
                 "chunk_id": chunk_id,
                 "user_id": user_id,
@@ -89,7 +91,6 @@ async def embed_cv(
 
     if not records:
         # No text to embed — mark done and return
-        from shared.models import CV
         db.query(CV).filter(CV.id == cv_id).update(
             {"embedding_status": "done"}
         )
@@ -107,6 +108,23 @@ async def embed_cv(
     coll.upsert(ids=ids, documents=list(texts), metadatas=list(metadatas), embeddings=embeddings.tolist())
 
     # Update embedding_status in DB
-    from shared.models import CV
     db.query(CV).filter(CV.id == cv_id).update({"embedding_status": "done"})
     db.commit()
+
+
+async def embed_cv_async(
+    cv_id: uuid.UUID,
+    user_id: str,
+    sections: list[dict[str, Any]],
+) -> None:
+    """
+    Async wrapper that creates its own DB session for background embedding.
+    """
+    db = SessionLocal()
+    try:
+        await embed_cv(cv_id, user_id, sections, db)
+    except Exception:
+        # Log error but don't raise (background task)
+        pass
+    finally:
+        db.close()

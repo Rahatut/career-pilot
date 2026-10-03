@@ -18,8 +18,8 @@ router = APIRouter(tags=["jobs"])
 @router.post("/search", response_model=dict)
 async def search_jobs(
     q: Annotated[str, Query(min_length=2, description="Search query")],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     page: Annotated[int, Query(ge=1)] = 1,
-    current_user_id: Annotated[str, Depends(get_current_user)] = "",
     db=Depends(get_db),
 ):
     """Search JSearch and persist results to the Job table."""
@@ -57,13 +57,13 @@ async def search_jobs(
 
 @router.get("/recommended", response_model=dict)
 async def get_recommended_jobs(
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     limit: Annotated[int, Query(ge=1, le=20)] = 10,
     db=Depends(get_db),
 ):
     """Get job recommendations based on user's CV skills."""
     # Fetch user profile
-    profile = db.query(UserProfile).filter(UserProfile.user_id == user_id).first()
+    profile = db.query(UserProfile).filter(UserProfile.user_id == current_user_id).first()
     if not profile or not profile.skills:
         raise HTTPException(404, "No profile or skills found for recommendations")
 

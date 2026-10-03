@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    database_url: str = "sqlite:///./dev.db"
+    database_url: str
     clerk_secret_key: Optional[str] = None
     openai_api_key: Optional[str] = None
     chroma_db_path: str = "./chroma_db"

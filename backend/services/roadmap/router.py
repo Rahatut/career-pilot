@@ -16,17 +16,17 @@ router = APIRouter(tags=["roadmap"])
 @router.post("/generate", response_model=dict)
 async def generate(
     target_role: Annotated[str, Body(description="Target job role")],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     missing_skills: Annotated[list[str], Body(description="Skills to develop")] = [],
     current_level: Annotated[str | None, Body(description="Current experience level")] = None,
     weeks: Annotated[int, Query(ge=1, le=24)] = 8,
-    user_id: Annotated[str, Header()] = "",
     db=Depends(get_db),
 ):
     """Generate a new roadmap, replacing any existing one."""
     content = await generate_roadmap(target_role, missing_skills, current_level, weeks)
 
     # Replace existing roadmap for this user
-    existing = db.query(Roadmap).filter(Roadmap.user_id == user_id).first()
+    existing = db.query(Roadmap).filter(Roadmap.user_id == current_user_id).first()
     if existing:
         existing.content = content
         existing.target_role = target_role
@@ -34,7 +34,7 @@ async def generate(
     else:
         roadmap = Roadmap(
             id=uuid.uuid4(),
-            user_id=user_id,
+            user_id=current_user_id,
             target_role=target_role,
             content=content,
             weeks_completed=0,
@@ -53,11 +53,11 @@ async def generate(
 
 @router.get("/me", response_model=dict)
 def get_roadmap(
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """Get the user's active roadmap."""
-    roadmap = db.query(Roadmap).filter(Roadmap.user_id == user_id).first()
+    roadmap = db.query(Roadmap).filter(Roadmap.user_id == current_user_id).first()
     if not roadmap:
         raise HTTPException(404, "No roadmap found")
 
@@ -72,11 +72,11 @@ def get_roadmap(
 @router.patch("/week/{n}", response_model=dict)
 def mark_week_complete(
     n: int,
-    user_id: Annotated[str, Header()],
+    current_user_id: Annotated[str, Depends(get_current_user)],
     db=Depends(get_db),
 ):
     """Mark a week as completed and update weeks_completed counter."""
-    roadmap = db.query(Roadmap).filter(Roadmap.user_id == user_id).first()
+    roadmap = db.query(Roadmap).filter(Roadmap.user_id == current_user_id).first()
     if not roadmap:
         raise HTTPException(404, "No roadmap found")
 
