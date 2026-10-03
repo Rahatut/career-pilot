@@ -125,6 +125,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                   onDragLeave={() => setDragging(false)}
                   onDrop={(e) => { e.preventDefault(); setDragging(false); simulateUpload(); }}
                   onClick={() => fileRef.current?.click()}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileRef.current?.click(); }}}
+                  role="button"
+                  tabIndex={0}
                 >
                   <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={simulateUpload} />
                   <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center">

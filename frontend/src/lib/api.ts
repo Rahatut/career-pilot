@@ -115,9 +115,6 @@ export async function uploadCv(file: File): Promise<{ cv_id: string; sections_co
   form.append("file", file);
   const token = await getAuthToken();
   
-  console.log("CV Upload - Token:", token?.substring(0, 20) + "...");
-  console.log("CV Upload - File:", file.name, `(${(file.size / 1024 / 1024).toFixed(2)}MB)`);
-  
   // Don't set Content-Type header for FormData - browser will set it with boundary
   const res = await fetch(`${API_BASE}/cv/upload`, {
     method: "POST",
@@ -127,11 +124,9 @@ export async function uploadCv(file: File): Promise<{ cv_id: string; sections_co
   
   if (!res.ok) {
     const errorText = await res.text();
-    console.error("CV Upload Error:", res.status, errorText);
     throw new Error(`CV upload failed: ${res.status} ${errorText}`);
   }
   const result = await res.json();
-  console.log("CV Upload Success:", result);
   return result;
 }
 

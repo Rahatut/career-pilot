@@ -350,9 +350,9 @@ export function FindJobs({ onNavigate }: FindJobsProps) {
                 const isSaved = savedJobs.has(job.id);
 
                 return (
-                  <Card
+                  <button
                     key={job.id}
-                    className="p-6 border border-border cursor-pointer group transition-colors hover:border-border-strong"
+                    className="w-full p-6 border border-border text-left group transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     onClick={() => onNavigate?.("job-detail", job.id)}
                   >
                     <div className="flex items-start justify-between gap-4 mb-4">
@@ -409,7 +409,7 @@ export function FindJobs({ onNavigate }: FindJobsProps) {
                         View details <ExternalLink className="w-3.5 h-3.5" />
                       </Button>
                     </div>
-                  </Card>
+                  </button>
                 );
               })}
             </div>

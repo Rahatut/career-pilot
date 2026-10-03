@@ -120,8 +120,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 </Button>
               </div>
               <div className="flex gap-4 overflow-x-auto pb-2">
-                {kanbanData.map((column, idx) => (
-                  <KanbanColumn key={idx} {...column} />
+                {kanbanData.map((column) => (
+                  <KanbanColumn key={column.title} {...column} />
                 ))}
               </div>
             </div>
