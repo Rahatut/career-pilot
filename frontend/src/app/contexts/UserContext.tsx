@@ -1,4 +1,5 @@
 import * as React from "react";
+import { signIn as apiSignIn, signUp as apiSignUp } from "../../lib/api";
 
 export interface User {
   id: string;
@@ -17,29 +18,6 @@ interface UserContextValue {
 }
 
 const UserContext = React.createContext<UserContextValue | null>(null);
-
-const API_BASE = "/api";
-
-async function apiCall<T>(
-  path: string,
-  method: string = "POST",
-  body?: Record<string, unknown>
-): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Request failed: ${response.statusText}`);
-  }
-
-  return response.json();
-}
 
 // ─── UserProvider ─────────────────────────────────────────────────────────────
 export function UserProvider({ children }: { children: React.ReactNode }) {
@@ -66,11 +44,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiCall<User>("/auth/signup", "POST", {
-        name,
-        email,
-        password,
-      });
+      const response = await apiSignUp(name, email, password);
 
       setUser(response);
       localStorage.setItem("cp_user", JSON.stringify(response));
@@ -88,10 +62,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiCall<User>("/auth/signin", "POST", {
-        email,
-        password,
-      });
+      const response = await apiSignIn(email, password);
 
       setUser(response);
       localStorage.setItem("cp_user", JSON.stringify(response));

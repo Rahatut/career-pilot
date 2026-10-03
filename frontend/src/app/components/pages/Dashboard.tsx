@@ -6,7 +6,7 @@ import { Card, SignatureCard, CTABand } from "../ui/card";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import { Badge } from "../ui/badge";
-import { Briefcase, CalendarDays, Flame, Target, TrendingUp, Sparkles, ArrowRight } from "lucide-react";
+import { Briefcase, CalendarDays, Flame, Target, TrendingUp, Sparkles, ArrowRight, AlertCircle } from "lucide-react";
 import { getDashboard, getApplications, type DashboardStats, type Application } from "../../../lib/api";
 import { useUser } from "../../contexts";
 
@@ -19,12 +19,14 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const [dashData, setDashData] = React.useState<DashboardStats | null>(null);
   const [applications, setApplications] = React.useState<Application[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!user) return;
+    setError(null);
     Promise.all([getDashboard(), getApplications()])
       .then(([dash, apps]) => { setDashData(dash); setApplications(apps); })
-      .catch(() => {})
+      .catch((err) => { setError(err.message); console.error("Dashboard load failed:", err); })
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -53,6 +55,15 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   return (
     <div className="space-y-section">
+      {error && (
+        <div className="mx-auto max-w-7xl px-4 py-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-destructive/10 shrink-0">
+            <AlertCircle className="w-5 h-5 text-destructive" />
+          </div>
+          <p className="text-body-md text-destructive flex-1">{error}</p>
+          <Button variant="outline" size="sm" onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      )}
       {/* Hero section - white canvas with 96px rhythm */}
       <section className="section-padding container-editorial">
         <h2 className="text-display-lg mb-2">Good morning{user?.name ? `, ${user.name.split(" ")[0]}` : ""}</h2>

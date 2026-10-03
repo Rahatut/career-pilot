@@ -190,7 +190,7 @@ export function Roadmap() {
     setLoading(true);
     getRoadmap()
       .then(setRoadmap)
-      .catch(() => {})
+      .catch((err) => { console.error("Roadmap load failed:", err); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -199,8 +199,8 @@ export function Roadmap() {
     try {
       const generated = await generateRoadmap({
         target_role: roadmap?.target_role ?? "Software Engineer",
-        skill_gaps: roadmap?.skill_gaps,
-        timeline_weeks: roadmap?.timeline_weeks,
+        missing_skills: roadmap?.skill_gaps,
+        weeks: roadmap?.timeline_weeks,
       });
       setRoadmap(generated);
     } catch (e) {

@@ -83,9 +83,12 @@ export function FindJobs({ onNavigate }: FindJobsProps) {
   // Fetch jobs whenever query changes
   React.useEffect(() => {
     setLoading(true);
-    searchJobs({ q: query, page_size: 20 })
+    searchJobs({ query, page_size: 20 })
       .then((res) => setRawJobs(res.jobs.map(mapJob)))
-      .catch(() => setRawJobs(MOCK_JOBS))
+      .catch((err) => {
+        console.error("Job search failed:", err);
+        setRawJobs(MOCK_JOBS);
+      })
       .finally(() => setLoading(false));
   }, [query]);
 
