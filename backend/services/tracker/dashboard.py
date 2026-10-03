@@ -134,7 +134,7 @@ Write a short, motivating nudge (1 sentence, max 20 words) to inspire them to ke
         if not client:
             return "Keep pushing forward!"
         response = await client.chat.completions.create(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             messages=[
                 {"role": "system", "content": "You are a motivational career assistant."},
                 {"role": "user", "content": prompt},

@@ -27,7 +27,7 @@ def _call_llm(system_prompt: str, user_prompt: str) -> str:
     try:
         client = _get_client()
         response = client.chat.completions.create(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

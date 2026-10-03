@@ -68,7 +68,7 @@ def parse_intent(text: str) -> dict[str, Any]:
         if not client:
             raise ValueError("No API key")
         response = client.chat.completions.create(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             response_format={"type": "json_object"},
             messages=[
                 {

@@ -132,7 +132,7 @@ async def chat(
                 reply = "AI assistant is not configured. Please set OPENAI_API_KEY in .env to enable full functionality."
             else:
                 response = await openai_client.chat.completions.create(
-                    model="gemini-1.5-flash-latest",
+                    model="gemini-1.5-flash",
                     messages=messages,
                     max_tokens=800,
                     temperature=0.7,
@@ -177,7 +177,7 @@ async def chat_stream(
                 full_reply = msg
             else:
                 stream = await openai_client.chat.completions.create(
-                    model="gemini-1.5-flash-latest",
+                    model="gemini-1.5-flash",
                     messages=messages,
                     stream=True,
                     max_tokens=800,

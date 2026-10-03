@@ -38,7 +38,7 @@ async def classify_intent(text: str) -> str:
 
     try:
         response = await client.chat.completions.create(
-            model="gemini-1.5-flash-latest",
+            model="gemini-1.5-flash",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": text[:500]},

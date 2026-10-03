@@ -51,7 +51,7 @@ Do not wrap in {{"weeks": [...]}}. Return a raw JSON array. The first week shoul
 """
 
     response = await _get_client().chat.completions.create(
-        model="gemini-1.5-flash-latest",
+        model="gemini-1.5-flash",
         messages=[
             {
                 "role": "system",

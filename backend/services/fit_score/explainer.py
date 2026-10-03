@@ -44,7 +44,7 @@ Write a brief, encouraging, and actionable explanation (2-3 sentences) of why th
 """
 
     response = await client.chat.completions.create(
-        model="gemini-1.5-flash-latest",
+        model="gemini-1.5-flash",
         messages=[
             {
                 "role": "system",
