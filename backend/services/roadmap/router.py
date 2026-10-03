@@ -1,8 +1,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Header, Query
-from sqlalchemy.orm import selectinload
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 
 from shared.auth import get_current_user
 from shared.db import get_db

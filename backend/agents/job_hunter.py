@@ -16,13 +16,12 @@ from typing import Any
 
 from openai import OpenAI
 
-from services.fit_score.scorer import compute_fit_score
 from services.fit_score.explainer import explain_score
+from services.fit_score.scorer import compute_fit_score
 from services.jobs.api_client import search_jsearch, upsert_job
 from shared.config import settings
 from shared.db import SessionLocal
 from shared.models import FitScore
-
 
 _client: OpenAI | None = None
 

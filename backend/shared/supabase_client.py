@@ -1,5 +1,5 @@
-from supabase import create_client, Client
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from supabase import Client, create_client
 
 
 class SupabaseSettings(BaseSettings):

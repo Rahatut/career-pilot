@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 
 from shared.config import settings
 from shared.models import (
+    FitScore,
     Goal,
+    Job,
     JobApplication,
     Roadmap,
     Task,
-    FitScore,
-    Job,
 )
 
 

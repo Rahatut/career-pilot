@@ -1,5 +1,5 @@
-from typing import Annotated
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from shared.auth import get_current_user
 from shared.db import get_db
 from shared.models import User
-from shared.schemas import SignUpRequest, SignInRequest, AuthResponse
+from shared.schemas import AuthResponse, SignInRequest, SignUpRequest
 from shared.supabase_client import get_supabase_admin_client
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -84,7 +84,7 @@ def signup(
             pass
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to create user profile: {str(e)}",
+            detail=f"Failed to create user profile: {e!s}",
         )
 
     # Get session token by signing in with the credentials
@@ -97,7 +97,7 @@ def signup(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Failed to create session: {str(e)}",
+            detail=f"Failed to create session: {e!s}",
         )
 
     return AuthResponse(
@@ -126,7 +126,7 @@ def signin(
         })
         user_id = str(auth_response.user.id)
         token = auth_response.session.access_token
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",

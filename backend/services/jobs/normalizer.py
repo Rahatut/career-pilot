@@ -1,5 +1,4 @@
 import re
-from typing import Any
 
 
 def extract_skills_from_description(description: str) -> list[str]:

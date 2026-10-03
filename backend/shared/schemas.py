@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -6,25 +6,25 @@ from pydantic import BaseModel
 class CvSection(BaseModel):
     section_type: str
     content: str
-    skills_extracted: List[str] = []
-    dates: Dict[str, Any] = {}
+    skills_extracted: list[str] = []
+    dates: dict[str, Any] = {}
 
 
 class UserProfile(BaseModel):
     user_id: str
-    skills: List[str] = []
+    skills: list[str] = []
     experience_years: int = 0
     education_level: str = "unknown"
-    location: Optional[str] = None
+    location: str | None = None
     embedding_status: str = "pending"
 
 
 class FitScore(BaseModel):
     total: int
-    breakdown: Dict[str, float]
-    matched_skills: List[str]
-    missing_skills: List[str]
-    explanation: Optional[str] = None
+    breakdown: dict[str, float]
+    matched_skills: list[str]
+    missing_skills: list[str]
+    explanation: str | None = None
 
 
 class CVUploadResponse(BaseModel):
@@ -35,30 +35,30 @@ class CVUploadResponse(BaseModel):
 
 class EducationEntry(BaseModel):
     id: str
-    institution: Optional[str] = None
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
-    content: Optional[str] = None
+    institution: str | None = None
+    start_date: str | None = None
+    end_date: str | None = None
+    content: str | None = None
 
 
 class ExperienceEntry(BaseModel):
     id: str
-    institution: Optional[str] = None
-    position: Optional[str] = None
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
-    content: Optional[str] = None
+    institution: str | None = None
+    position: str | None = None
+    start_date: str | None = None
+    end_date: str | None = None
+    content: str | None = None
 
 
 class UserProfileResponse(BaseModel):
     user_id: str
-    skills: List[str] = []
-    education: List[EducationEntry] = []
-    experience: List[ExperienceEntry] = []
+    skills: list[str] = []
+    education: list[EducationEntry] = []
+    experience: list[ExperienceEntry] = []
 
 
 class SkillListResponse(BaseModel):
-    skills: List[str]
+    skills: list[str]
 
 
 # ──────────────────────────────────────────────────────────────────────────────

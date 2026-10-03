@@ -2,16 +2,14 @@ import asyncio
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload, Session
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from sqlalchemy.orm import Session
 
 from shared.auth import get_current_user
 from shared.db import get_db
 from shared.models import CV, CVSection, UserProfile
-from shared.schemas import CVUploadResponse, UserProfileResponse, SkillListResponse
+from shared.schemas import CVUploadResponse, SkillListResponse, UserProfileResponse
 
-from .embedder import embed_cv
 from .parser import parse_cv_bytes
 
 router = APIRouter(tags=["cv"])
@@ -76,7 +74,7 @@ async def upload_cv(
     try:
         parsed = parse_cv_bytes(data)
     except Exception as e:
-        raise HTTPException(400, f"Failed to parse CV: {str(e)}")
+        raise HTTPException(400, f"Failed to parse CV: {e!s}")
     
     sections_data = parsed["sections"]
 

@@ -5,7 +5,6 @@ from typing import Any
 import chromadb
 from sentence_transformers import SentenceTransformer
 
-from shared.config import settings
 from shared.db import SessionLocal
 from shared.models import CV
 
@@ -99,7 +98,6 @@ async def embed_cv(
 
     # Batch embed
     texts, metadatas = zip(*records)
-    import numpy as np
     embeddings = model.encode(list(texts), show_progress_bar=False)
     ids = [f"{cv_id}-{i}" for i in range(len(records))]
 

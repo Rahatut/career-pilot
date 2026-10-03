@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from .config import settings
-from .models import Base
+
 
 # Fix Supabase connection string: remove pgbouncer option that psycopg2 doesn't support
 def get_clean_database_url(db_url: str) -> str:

@@ -5,7 +5,6 @@ from sentence_transformers import SentenceTransformer
 
 from shared.config import settings
 
-
 _client = None
 _model = None
 

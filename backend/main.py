@@ -3,12 +3,19 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from services.assistant.router import router as assistant_router
+from services.auth.router import router as auth_router
+from services.fit_score.router import router as fit_router
+from services.jobs.router import router as jobs_router
+from services.profile.router import router as profile_router
+from services.roadmap.router import router as roadmap_router
+from services.tracker.router import router as tracker_router
 from shared.db import Base, engine
 from shared.models import (  # noqa: F401 — importing registers subclasses
     CV,
-    CVSection,
     ChatMessage,
     ChatSession,
+    CVSection,
     FitScore,
     Goal,
     Job,
@@ -18,14 +25,6 @@ from shared.models import (  # noqa: F401 — importing registers subclasses
     User,
     UserProfile,
 )
-
-from services.profile.router import router as profile_router
-from services.jobs.router import router as jobs_router
-from services.fit_score.router import router as fit_router
-from services.assistant.router import router as assistant_router
-from services.tracker.router import router as tracker_router
-from services.roadmap.router import router as roadmap_router
-from services.auth.router import router as auth_router
 
 
 @asynccontextmanager

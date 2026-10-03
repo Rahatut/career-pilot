@@ -1,8 +1,9 @@
 import asyncio
 import uuid
-from typing import Annotated, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Header, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI
 
@@ -13,7 +14,7 @@ from shared.models import ChatMessage, ChatSession
 
 from .intent import classify_intent
 from .rag import query_cv
-from .tools import cover_letter, skill_gap, readiness_check
+from .tools import cover_letter, readiness_check, skill_gap
 
 router = APIRouter(tags=["assistant"])
 

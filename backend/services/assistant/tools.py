@@ -6,9 +6,6 @@ from shared.config import settings
 from shared.db import SessionLocal
 from shared.models import CV, CVSection
 
-from .rag import query_cv
-
-
 _client: OpenAI | None = None
 
 

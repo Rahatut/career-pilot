@@ -1,4 +1,3 @@
-import hashlib
 import uuid
 from typing import Any
 
@@ -66,7 +65,7 @@ def _infer_seniority(title: str) -> str | None:
 
 def _infer_experience(description: str) -> int | None:
     import re
-    m = re.search(r"(\d+)\+?\s*(?:years?|yrs?)\s+(?:of\s+)?experience", description, re.I)
+    m = re.search(r"(\d+)\+?\s*(?:years?|yrs?)\s+(?:of\s+)?experience", description, re.IGNORECASE)
     if m:
         return int(m.group(1))
     return None

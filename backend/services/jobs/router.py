@@ -1,16 +1,13 @@
-import asyncio
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Header, Query
-from sqlalchemy.orm import selectinload
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from shared.auth import get_current_user
 from shared.db import get_db
 from shared.models import Job, UserProfile
 
 from .api_client import search_jsearch, upsert_job
-from .normalizer import extract_skills_from_description
 
 router = APIRouter(tags=["jobs"])
 

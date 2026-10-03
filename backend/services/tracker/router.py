@@ -1,15 +1,13 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Header, Body
-from sqlalchemy.orm import selectinload, Session
+from fastapi import APIRouter, Body, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 from shared.auth import get_current_user
 from shared.db import get_db
-from shared.models import Goal, JobApplication, Task, Roadmap, Job
-
-from .dashboard import build_dashboard
+from shared.models import Goal, Job, JobApplication, Task
 
 router = APIRouter(tags=["tracker"])
 
@@ -159,7 +157,7 @@ def create_application(
         user_id=current_user_id,
         job_id=job_id,
         status=status,
-        status_history=[{"status": status, "timestamp": datetime.utcnow().isoformat()}],
+        status_history=[{"status": status, "timestamp": datetime.now(timezone.utc).isoformat()}],
     )
     db.add(app)
     db.commit()
@@ -212,7 +210,7 @@ def update_application(
         raise HTTPException(404, "Application not found")
     app.status = status
     history = app.status_history or []
-    history.append({"status": status, "timestamp": datetime.utcnow().isoformat()})
+    history.append({"status": status, "timestamp": datetime.now(timezone.utc).isoformat()})
     app.status_history = history
     db.commit()
     return {
